@@ -1,10 +1,9 @@
-from tools.JsonManager import JsonManager
-from tools.KnockManager import KnockManager
-from tools.ProfileManager import ProfileManager
-from tools.IPManager import IPManager
+from tkinter import Tk
+from screens.MainScreen import MainScreen
 
-
-json_man = JsonManager()
-knock_man = KnockManager()
-profile_man = ProfileManager()
-ip_man = IPManager()
+window = Tk()
+window.title("Port Knocker")
+window.geometry("400x450")
+window.resizable(False, False)
+app = MainScreen(window)
+window.mainloop()
