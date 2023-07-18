@@ -2,6 +2,8 @@ import tkinter.messagebox
 from .Screen import Screen
 from tkinter import *
 from functools import partial
+from tools.PortManager import PortManager
+
 
 ports = []
 
@@ -47,7 +49,7 @@ class SecondScreen(Screen):
         self.profile_name.pack()
 
         self.button = Button(self.frame, text="Add Port",
-                             command=partial(PortManager(self.listbox, self.port).add_port),
+                             command=partial(PortManager(self.listbox, self.port, ports).add_port),
                              width=10)
         self.button.pack()
 
@@ -55,7 +57,7 @@ class SecondScreen(Screen):
         self.button2.pack()
 
         self.button3 = Button(self.frame, text="Delete",
-                              command=partial(PortManager(self.listbox, self.port).delete_port),
+                              command=partial(PortManager(self.listbox, self.port, ports).delete_port),
                               anchor="center", width=10)
         self.button3.pack()
 
@@ -125,27 +127,3 @@ class SecondScreen(Screen):
 
     def update_profiles(self, profile_name):
         self.main_screen.listbox.insert(END, profile_name)
-
-
-class PortManager:
-    def __init__(self, listbox, port_entry):
-        self.listbox = listbox
-        self.port_entry = port_entry
-
-    def add_port(self):
-        if self.port_entry.get():
-            try:
-                self.listbox.insert(self.listbox.size(), self.port_entry.get())
-                ports.append(int(self.port_entry.get()))
-                self.port_entry.delete(0, END)
-            except ValueError:
-                tkinter.messagebox.showerror("Error!", "Invalid Port!")
-                self.port_entry.delete(0, END)
-
-    def delete_port(self):
-        self.listbox.delete(tkinter.ANCHOR)
-        content = self.listbox.get(0, END)
-        ports.clear()
-        for i in range(len(content)):
-            ports.append(int(content[i]))
-            print(ports)
