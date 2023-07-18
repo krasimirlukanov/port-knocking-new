@@ -15,12 +15,5 @@ class Screen:
         self.ip_man = IPManager()
         self.knock_man = KnockManager()
 
-    def start_page(self):
+    def start(self):
         self.frame.pack()
-
-    def switch_page(self, screen):
-        self.frame.forget()
-        screen.start_page()
-
-    def knock(self):
-        pass

@@ -1,4 +1,6 @@
-import tkinter.messagebox
+from tools.LoadProfiles import LoadProfiles
+from tools.PageSwitcher import PageSwitcher
+from tools.ProfileKnock import ProfileKnock
 from .SecondScreen import SecondScreen
 from .Screen import Screen
 from tkinter import *
@@ -7,11 +9,11 @@ from functools import partial
 ports = []
 
 
-class MainScreen(Screen):
+class MainScreen(Screen, PageSwitcher):
     def __init__(self, root):
         super().__init__(root=root)
         self.frame.pack()
-        self.second_screen = SecondScreen(self.root, self)
+        self.second_screen: SecondScreen = SecondScreen(self.root, self)
 
         self.label = Label(self.frame, text="Port Knocker", anchor="nw")
         self.label.pack()
@@ -40,38 +42,17 @@ class MainScreen(Screen):
         self.del_profile_btn = Button(self.frame, text="Delete Profile", width=10, height=2,
                                       command=partial(self.profile_man.del_profile, self.listbox))
 
-        self.knock_btn = Button(self.frame, text="Knock", width=10, height=2, command=self.knock)
+        self.profile_knock = ProfileKnock(self.listbox, self.json_man, self.knock_man, ports)
+        self.knock_btn = Button(self.frame, text="Knock", width=10, height=2, command=self.profile_knock.knock)
 
         self.new_profile_btn.pack()
         self.open_profile_btn.pack()
         self.del_profile_btn.pack()
         self.knock_btn.pack()
 
-        self.load_profile_names()
+        profile_loader = LoadProfiles(self.json_man, self.listbox)
+        profile_loader.load_profile_names()
 
     def open_profile(self):
         self.profile_man.open_profile(self.second_screen, listbox=self.listbox, ports=ports)
         self.switch_page(self.second_screen)
-
-    def knock(self):
-        idxs = self.listbox.curselection()
-        if not idxs:
-            tkinter.messagebox.showerror("Error!", "Please select a profile and try again!")
-        for pos in idxs:
-            text = self.listbox.get(pos)
-
-            profiles = self.json_man.load_json("tools/profiles.json")
-
-            ip = profiles[text]["host"]
-            ports.clear()
-            for port in profiles[text]["ports"]:
-                ports.append(port)
-
-            self.knock_man.knock(ip, ports)
-            tkinter.messagebox.showinfo("Ok!", "Knocking!")
-
-    def load_profile_names(self):
-        profiles = self.json_man.load_json("tools/profiles.json")
-
-        for i in profiles:
-            self.listbox.insert(END, str(i))
