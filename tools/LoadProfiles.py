@@ -10,5 +10,4 @@ class LoadProfiles:
         profiles = self.json_man.load_json("profiles.json")
 
         for i in profiles:
-            print(i)
             self.listbox.insert(END, i)

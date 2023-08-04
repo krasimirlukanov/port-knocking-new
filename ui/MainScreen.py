@@ -15,18 +15,18 @@ class MainScreen(Screen, PageSwitcher):
         self.frame.pack()
         self.second_screen: SecondScreen = SecondScreen(self.root, self)
 
-        self.label = Label(self.frame, text="Port Knocker", anchor="nw")
-        self.label.pack()
+        self.port_knock_text = Label(self.frame, text="Port Knocker", anchor="nw")
+        self.port_knock_text.pack()
 
-        self.label2 = Label(self.frame, text="by Krasimir Lukanov for ToolDomains")
-        self.label2.pack()
+        self.author_text = Label(self.frame, text="by Krasimir Lukanov for ToolDomains")
+        self.author_text.pack()
 
-        self.label3 = Label(self.frame, text="Saved Profiles", anchor="nw")
-        self.label3.pack()
+        self.profiles_text = Label(self.frame, text="Saved Profiles", anchor="nw")
+        self.profiles_text.pack()
 
-        self.label.config(font=("Ariel", 15), anchor="nw")
-        self.label2.config(font=("Ariel", 10), anchor="nw")
-        self.label3.config(font=("Ariel", 10), anchor="nw")
+        self.port_knock_text.config(font=("Ariel", 15), anchor="nw")
+        self.author_text.config(font=("Ariel", 10), anchor="nw")
+        self.profiles_text.config(font=("Ariel", 10), anchor="nw")
 
         self.scrollbar = Scrollbar(self.frame)
         self.listbox = Listbox(self.frame, yscrollcommand=self.scrollbar.set)
@@ -37,22 +37,22 @@ class MainScreen(Screen, PageSwitcher):
 
         self.new_profile_btn = Button(self.frame, text="New Profile", width=10, height=2,
                                       command=partial(self.switch_page, self.second_screen))
-        self.open_profile_btn = Button(self.frame, text="Edit Profile", width=10, height=2,
+        self.edit_profile_btn = Button(self.frame, text="Edit Profile", width=10, height=2,
                                        command=self.open_profile)
         self.del_profile_btn = Button(self.frame, text="Delete Profile", width=10, height=2,
-                                      command=partial(self.profile_man.del_profile, self.listbox))
+                                      command=partial(self.profile_modifier.delete_profile_ui, self.listbox))
 
-        self.profile_knock = ProfileKnock(self.listbox, self.json_man, self.knock_man, ports)
-        self.knock_btn = Button(self.frame, text="Knock", width=10, height=2, command=self.profile_knock.knock)
+        self.profile_knock = ProfileKnock(self.listbox, self.json_file, self.knocker)
+        self.knock_btn = Button(self.frame, text="Knock", width=10, height=2, command=self.profile_knock.profile_knock)
 
         self.new_profile_btn.pack()
-        self.open_profile_btn.pack()
+        self.edit_profile_btn.pack()
         self.del_profile_btn.pack()
         self.knock_btn.pack()
 
-        profile_loader = LoadProfiles(self.json_man, self.listbox)
-        profile_loader.load_profile_names()
+        self.profile_loader = LoadProfiles(self.json_file, self.listbox)
+        self.profile_loader.load_profile_names()
 
     def open_profile(self):
-        self.profile_man.open_profile(self.second_screen, listbox=self.listbox, ports=ports)
+        self.profile_modifier.open_profile(self.second_screen, listbox=self.listbox, ports=ports)
         self.switch_page(self.second_screen)

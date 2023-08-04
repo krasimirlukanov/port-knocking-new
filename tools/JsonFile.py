@@ -1,7 +1,7 @@
 import json
 
 
-class JsonManager:
+class JsonFile:
     @staticmethod
     def load_json(file_name):
         with open(f"{file_name}", 'r') as f:

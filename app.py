@@ -1,5 +1,5 @@
 from tkinter import Tk
-from screens.MainScreen import MainScreen
+from ui.MainScreen import MainScreen
 
 window = Tk()
 window.title("Port Knocker")
